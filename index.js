@@ -80,4 +80,6 @@ client.on('message', async (message) => {
     }
 });
 
+//b
+
 client.initialize();
