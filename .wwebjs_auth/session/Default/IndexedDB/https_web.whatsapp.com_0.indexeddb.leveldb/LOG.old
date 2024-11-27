@@ -1,0 +1,4 @@
+2024/11/26-21:21:10.820 2e68 Reusing MANIFEST C:\Users\Felipe Narciso\Desktop\www\bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/11/26-21:21:10.821 2e68 Recovering log #58
+2024/11/26-21:21:10.878 2e68 Reusing old log C:\Users\Felipe Narciso\Desktop\www\bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000058.log 
+2024/11/26-21:21:12.795 3a50 Manual compaction at level-0 from '\x00(\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00)\x00\x00\x00' @ 0 : 0; will stop at (end)
