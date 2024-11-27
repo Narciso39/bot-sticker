@@ -14,18 +14,41 @@ client.on('ready', () => {
 });
 
 client.on('qr', qr => {
-    qrcode.generate(qr, {small: true});
+    qrcode.generate(qr, { small: true });
 });
 
-client.on('message_create', message => {
+// Comando help
+client.on('message', async (message) => {
+    // Verificar se a mensagem é o comando de help
+    if (message.body === '!help' || message.body === '/help') {
+        const helpMessage = `
+**Comandos disponíveis:**
+
+1. **!ping** - Responde com "pong". 
+2. **/f [imagem]** - Envia uma figurinha a partir de uma imagem. 
+3. **!help ou /help** - Mostra esta lista de comandos.
+
+Envie um desses comandos para interagir com o bot.
+        `;
+        client.sendMessage(message.from, helpMessage);
+        return; // Impede a execução do resto do código para essa mensagem
+    }
+
+    // Verificar se a mensagem começa com algo diferente de '!' ou '/'
+    if (!message.body.startsWith('!') && !message.body.startsWith('/')) {
+        // Responder com uma mensagem nova
+        client.sendMessage(message.from, 'Você enviou uma mensagem não reconhecida. Use "!" para comandos ou "/" para figurinhas.');
+        return;
+    }
+
+    // Comando !ping
     if (message.body === '!ping') {
         setTimeout(() => {
             client.sendMessage(message.from, 'pong');
-        }, 5000); 
+        }, 5000);
     }
-});
 
-client.on('message', async (message) => {
+    // Comando /f para enviar uma figurinha
     if (message.body === '/f' && message.hasMedia) {
         const media = await message.downloadMedia();
 
@@ -45,11 +68,9 @@ client.on('message', async (message) => {
 
                 const sticker = MessageMedia.fromFilePath(outputPath);
 
-                
                 setTimeout(async () => {
                     await client.sendMessage(message.from, sticker, { sendMediaAsSticker: true });
 
-                  
                     setTimeout(async () => {
                         try {
                             await fs.unlink(outputPath);
@@ -59,9 +80,8 @@ client.on('message', async (message) => {
                         }
 
                         try {
-                            
                             await fs.access(inputPath);
-                            await fs.rename(inputPath, `${inputPath}.tmp`); 
+                            await fs.rename(inputPath, `${inputPath}.tmp`);
                             await fs.unlink(inputPath);
                             await fs.unlink(`${inputPath}.tmp`);
                             console.log(`Arquivo removido: ${inputPath}`);
@@ -79,7 +99,5 @@ client.on('message', async (message) => {
         }
     }
 });
-
-//b
 
 client.initialize();
