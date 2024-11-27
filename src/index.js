@@ -7,7 +7,7 @@ const client = new Client({
 });
 
 const qrcode = require('qrcode-terminal');
-const tempDir = path.join(__dirname, 'temp');
+const tempDir = path.join(__dirname, '../temp');
 
 client.on('ready', () => {
     console.log('Client is ready!');
