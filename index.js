@@ -29,18 +29,13 @@ client.on('message', async (message) => {
         const initialMessage = `
 Olá! 👋
 
-Eu sou um bot do WhatsApp, e posso te ajudar com alguns comandos!
-
-Aqui estão alguns exemplos:
-1. **!ping** - Eu responderei com "pong".
-2. **/f [imagem]** - Envia uma imagem como figurinha para você.
-3. **!help ou /help** - Mostra essa lista de comandos.
+Eu sou um bot feito pelo luis felipe, e posso te ajudar com alguns comandos!
 
 Caso você queira apenas conversar comigo, basta digitar qualquer coisa que eu vou tentar te ajudar!
 
 Se precisar de algo mais específico, fale diretamente comigo, que eu responderei o melhor possível.
 
-Envie **!help** ou **/help** para ver todos os comandos disponíveis.
+Envie *!help* ou */help* para ver todos os comandos disponíveis.
         `;
         client.sendMessage(message.from, initialMessage);
     }
@@ -48,11 +43,11 @@ Envie **!help** ou **/help** para ver todos os comandos disponíveis.
     // Comando help
     if (message.body === '!help' || message.body === '/help') {
         const helpMessage = `
-**Comandos disponíveis:**
+*Comandos disponíveis:*
 
-1. **!ping** - Responde com "pong". 
-2. **/f [imagem]** - Envia uma figurinha a partir de uma imagem. 
-3. **!help ou /help** - Mostra esta lista de comandos.
+1.  *!ping*  - Responde com "pong". 
+2.  */f [imagem]*  - Envia uma figurinha a partir de uma imagem. 
+3.  *!help ou /help*  - Mostra esta lista de comandos.
 
 Envie um desses comandos para interagir com o bot.
         `;
