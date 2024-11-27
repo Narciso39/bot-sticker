@@ -17,9 +17,35 @@ client.on('qr', qr => {
     qrcode.generate(qr, { small: true });
 });
 
-// Comando help
+// Mensagem inicial de boas-vindas
 client.on('message', async (message) => {
-    // Verificar se a mensagem é o comando de help
+    // Se a mensagem for a primeira ou qualquer mensagem não reconhecida, envia a mensagem inicial
+    if (message.body === '' || message.body === undefined || message.body === null) {
+        return; // Não faz nada se a mensagem estiver vazia ou indefinida
+    }
+
+    // Mensagem de boas-vindas caso o usuário não tenha enviado comandos conhecidos
+    if (!message.body.startsWith('!') && !message.body.startsWith('/')) {
+        const initialMessage = `
+Olá! 👋
+
+Eu sou um bot do WhatsApp, e posso te ajudar com alguns comandos!
+
+Aqui estão alguns exemplos:
+1. **!ping** - Eu responderei com "pong".
+2. **/f [imagem]** - Envia uma imagem como figurinha para você.
+3. **!help ou /help** - Mostra essa lista de comandos.
+
+Caso você queira apenas conversar comigo, basta digitar qualquer coisa que eu vou tentar te ajudar!
+
+Se precisar de algo mais específico, fale diretamente comigo, que eu responderei o melhor possível.
+
+Envie **!help** ou **/help** para ver todos os comandos disponíveis.
+        `;
+        client.sendMessage(message.from, initialMessage);
+    }
+
+    // Comando help
     if (message.body === '!help' || message.body === '/help') {
         const helpMessage = `
 **Comandos disponíveis:**
@@ -32,13 +58,6 @@ Envie um desses comandos para interagir com o bot.
         `;
         client.sendMessage(message.from, helpMessage);
         return; // Impede a execução do resto do código para essa mensagem
-    }
-
-    // Verificar se a mensagem começa com algo diferente de '!' ou '/'
-    if (!message.body.startsWith('!') && !message.body.startsWith('/')) {
-        // Responder com uma mensagem nova
-        client.sendMessage(message.from, 'Você enviou uma mensagem não reconhecida. Use "!" para comandos ou "/" para figurinhas.');
-        return;
     }
 
     // Comando !ping
