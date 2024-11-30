@@ -1,5 +1,5 @@
 # Usar uma imagem oficial do Node.js (v20.17.0) baseada no Ubuntu como base
-FROM node:20.17.0-bullseye-slim
+FROM node:20.17.0-alpine
 
 # Definir o diretório de trabalho dentro do container
 WORKDIR /app
