@@ -2,14 +2,17 @@ const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const sharp = require('sharp');
 const fs = require('fs-extra');
 const path = require('path');
-const { exec } = require('child_process');
+const puppeteer = require('puppeteer-core');
+
+// Caminho para o Google Chrome
+const executablePath = '/usr/bin/google-chrome-stable'; // Caminho padrão do Google Chrome no CentOS
+
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
-        args: ['--no-sandbox', '--disable-setuid-sandbox'] // Adicionando o parâmetro --no-sandbox
+        executablePath // Usando o Google Chrome
     }
 });
-
 const qrcode = require('qrcode-terminal');
 const tempDir = path.join(__dirname, '../temp');
 
