@@ -2,8 +2,12 @@ const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const sharp = require('sharp');
 const fs = require('fs-extra');
 const path = require('path');
+const { exec } = require('child_process');
 const client = new Client({
-    authStrategy: new LocalAuth()
+    authStrategy: new LocalAuth(),
+    puppeteer: {
+        args: ['--no-sandbox', '--disable-setuid-sandbox'] // Adicionando o parâmetro --no-sandbox
+    }
 });
 
 const qrcode = require('qrcode-terminal');
@@ -19,12 +23,10 @@ client.on('qr', qr => {
 
 // Mensagem inicial de boas-vindas
 client.on('message', async (message) => {
-    // Se a mensagem for a primeira ou qualquer mensagem não reconhecida, envia a mensagem inicial
     if (message.body === '' || message.body === undefined || message.body === null) {
         return; // Não faz nada se a mensagem estiver vazia ou indefinida
     }
 
-    // Mensagem de boas-vindas caso o usuário não tenha enviado comandos conhecidos
     if (!message.body.startsWith('!') && !message.body.startsWith('/')) {
         const initialMessage = `
 Olá! 👋
@@ -40,7 +42,6 @@ Envie *!help* ou */help* para ver todos os comandos disponíveis.
         client.sendMessage(message.from, initialMessage);
     }
 
-    // Comando help
     if (message.body === '!help' || message.body === '/help') {
         const helpMessage = `
 *Comandos disponíveis:*
@@ -52,17 +53,15 @@ Envie *!help* ou */help* para ver todos os comandos disponíveis.
 Envie um desses comandos para interagir com o bot.
         `;
         client.sendMessage(message.from, helpMessage);
-        return; // Impede a execução do resto do código para essa mensagem
+        return; 
     }
 
-    // Comando !ping
     if (message.body === '!ping') {
         setTimeout(() => {
             client.sendMessage(message.from, 'pong');
         }, 5000);
     }
 
-    // Comando /f para enviar uma figurinha
     if (message.body === '/f' && message.hasMedia) {
         const media = await message.downloadMedia();
 
