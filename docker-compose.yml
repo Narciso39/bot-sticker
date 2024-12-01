@@ -1,6 +1,13 @@
+version: '3'
 services:
   bot:
-    image: bot
-    build:
-      context: .
-    mem_limit: 512m
+    build: .
+    container_name: bot-sticker
+    environment:
+      - NODE_ENV=production
+    mem_limit: 512m  # Limite de memória
+    ports:
+      - "3000:3000"  # Expondo a porta 3000 do container para a máquina host
+    volumes:
+      - .:/usr/src/app  # Montando o diretório atual para dentro do container
+    command: npm start  # Comando para rodar o bot
