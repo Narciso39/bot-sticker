@@ -1,0 +1,6 @@
+services:
+  bot:
+    image: bot
+    build:
+      context: .
+    mem_limit: 512m
