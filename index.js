@@ -9,10 +9,10 @@ const executablePath = '/usr/bin/google-chrome-stable'; // Altere se necessário
 
 const client = new Client({
     authStrategy: new LocalAuth(),
-    // puppeteer: {
-    //     executablePath, // Caminho do Google Chrome
-    //     args: ['--no-sandbox', '--disable-setuid-sandbox'] // Adiciona as flags
-    // }
+    puppeteer: {
+        executablePath, // Caminho do Google Chrome
+        args: ['--no-sandbox', '--disable-setuid-sandbox'] // Adiciona as flags
+    }
 });
 const qrcode = require('qrcode-terminal');
 const tempDir = path.join(__dirname, '../temp');
