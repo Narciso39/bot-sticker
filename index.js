@@ -5,12 +5,13 @@ const path = require('path');
 const puppeteer = require('puppeteer-core');
 
 // Caminho para o Google Chrome
-const executablePath = '/usr/bin/google-chrome-stable'; // Caminho padrão do Google Chrome no CentOS
+const executablePath = '/usr/bin/google-chrome-stable'; // Altere se necessário
 
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
-        executablePath // Usando o Google Chrome
+        executablePath, // Caminho do Google Chrome
+        args: ['--no-sandbox', '--disable-setuid-sandbox'] // Adiciona as flags
     }
 });
 const qrcode = require('qrcode-terminal');
