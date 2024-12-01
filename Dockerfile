@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Etapa 4: Instalar as dependências do Node.js
-RUN npm install
+RUN npm install --production
 
 # Etapa 5: Instalar as dependências do sistema necessárias para o Puppeteer/Chromium
 RUN apt-get update && apt-get install -y \
