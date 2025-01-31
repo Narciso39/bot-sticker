@@ -4,15 +4,14 @@ const fs = require('fs-extra');
 const path = require('path');
 const puppeteer = require('puppeteer-core');
 
-// Caminho para o Google Chrome
-const executablePath = '/usr/bin/google-chrome-stable'; // Altere se necessário
 
+// const executablePath = '/usr/bin/google-chrome-stable';
 const client = new Client({
     authStrategy: new LocalAuth(),
-    puppeteer: {
-        executablePath, // Caminho do Google Chrome
-        args: ['--no-sandbox', '--disable-setuid-sandbox'] // Adiciona as flags
-    }
+        // puppeteer: {
+        //     executablePath, 
+        //     args: ['--no-sandbox', '--disable-setuid-sandbox']
+        // }
 });
 const qrcode = require('qrcode-terminal');
 const tempDir = path.join(__dirname, '../temp');
@@ -25,10 +24,10 @@ client.on('qr', qr => {
     qrcode.generate(qr, { small: true });
 });
 
-// Mensagem inicial de boas-vindas
+
 client.on('message', async (message) => {
     if (message.body === '' || message.body === undefined || message.body === null) {
-        return; // Não faz nada se a mensagem estiver vazia ou indefinida
+        return; 
     }
 
     if (!message.body.startsWith('!') && !message.body.startsWith('/')) {
