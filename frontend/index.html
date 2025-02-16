@@ -1,24 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
-    <meta
-      http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
-    <title>Hello from Electron renderer!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bot WhatsApp</title>
   </head>
   <body>
-    <script type="module">
-      import { App } from './src/App.js'
-  
-      App.start()
-  
+    <h1>Bot WhatsApp</h1>
+    <button id="startBackendBtn">Iniciar Backend</button>
+
+    <div id="qrCodeContainer">
+      <img id="qrCode" alt="QR Code" width="300" height="300" />
+      <button onclick="fetchQRCode()">Carregar QR Code</button>
+    </div>
+
+    <div>
+      <input type="text" id="messageInput" placeholder="Digite uma mensagem" />
+      <button onclick="sendMessage()">Enviar Mensagem</button>
+    </div>
+
+    <div>
+      <input type="file" id="stickerInput" />
+      <button onclick="sendSticker()">Enviar Figurinha</button>
+    </div>
+
+    <script>
+      console.log("Script carregado!");
     </script>
+    <script src="./src/renderer.js"></script>
   </body>
 </html>

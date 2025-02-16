@@ -1,28 +1,27 @@
-const { exec } = require("child_process");
+const { spawn } = require("child_process");
 const path = require("path");
 
+let backendProcess = null;
+
 function startBackend() {
-  const backendPath = path.join(
-    __dirname,
-    "..",
-    "..",
-    "backend",
-    "src",
-    "index.js"
-  );
+  if (backendProcess) {
+    console.log("O backend já está rodando.");
+    return;
+  }
 
-  console.log(`Tentando iniciar o backend em: ${backendPath}`);
+  const backendPath = path.join(__dirname, "..", "..", "backend", "src", "index.js");
+  
+  console.log(`Iniciando o backend em: ${backendPath}`);
 
-  exec(`node ${backendPath}`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Erro ao iniciar o backend: ${error.message}`);
-      return;
-    }
-    if (stderr) {
-      console.error(`Erro no backend: ${stderr}`);
-      return;
-    }
-    console.log(`Backend iniciado: ${stdout}`);
+  backendProcess = spawn("node", [backendPath], { stdio: "inherit" });
+
+  backendProcess.on("close", (code) => {
+    console.log(`Backend encerrado com código ${code}`);
+    backendProcess = null;
+  });
+
+  backendProcess.on("error", (error) => {
+    console.error(`Erro ao iniciar o backend: ${error.message}`);
   });
 }
 
@@ -31,25 +30,37 @@ document.getElementById("startBackendBtn").addEventListener("click", () => {
   startBackend();
 });
 
+
+
 const fetchQRCode = async () => {
   try {
     const response = await fetch("http://localhost:3001/qr");
     if (response.ok) {
       const data = await response.json();
+      console.log("Dados recebidos do backend:", data); 
+      
       const qrCodeUrl = data.qrCode;
-      const qrImage = document.getElementById("qrCode");
-      qrImage.src = qrCodeUrl;
+      let qrImage = document.getElementById("qrCode");
+
+      if (qrImage) {
+        qrImage.src = qrCodeUrl;
+        console.log("QR Code atualizado com sucesso!");
+      } else {
+        console.error("Elemento da imagem do QR Code não encontrado!");
+      }
     } else {
-      console.error("QR Code não gerado ainda");
+      console.error("Falha ao buscar QR Code:", response.status);
     }
   } catch (error) {
     console.error("Erro ao buscar o QR Code:", error);
   }
 };
 
-window.onload = () => {
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM totalmente carregado!");
   fetchQRCode();
-};
+});
+
 
 async function sendMessage() {
   const message = document.getElementById("messageInput").value;
