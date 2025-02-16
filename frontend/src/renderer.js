@@ -44,7 +44,6 @@ document.getElementById("startBackendBtn").addEventListener("click", () => {
 
 const fetchQRCode = async () => {
   try {
-    startBot();
     const response = await fetch("http://localhost:3001/qr");
     if (response.ok) {
       const data = await response.json();
@@ -69,9 +68,13 @@ const fetchQRCode = async () => {
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM totalmente carregado!");
-  fetchQRCode();
+  startBot();
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM totalmente carregado!");
+  fetchQRCode();
+});
 async function sendMessage() {
   const message = document.getElementById("messageInput").value;
   const to = "numero_do_destinatario";
