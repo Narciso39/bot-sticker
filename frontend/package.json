@@ -1,0 +1,17 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "electron src/index.js",
+    "build": "npx electron-packager . --icon assets/bot.icns --out=packages",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^34.2.0"
+  }
+}
