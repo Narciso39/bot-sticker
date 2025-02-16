@@ -9,8 +9,8 @@ function startBackend() {
     return;
   }
 
-  const backendPath = path.join(__dirname, "..", "..", "backend", "src", "index.js");
-  
+  const backendPath = path.join(__dirname, "..", "backend", "src", "index.js");
+
   console.log(`Iniciando o backend em: ${backendPath}`);
 
   backendProcess = spawn("node", [backendPath], { stdio: "inherit" });
@@ -25,20 +25,31 @@ function startBackend() {
   });
 }
 
+const startBot = async () => {
+  const response = await fetch("http://localhost:3001/start-bot", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (response.ok) {
+    return true;
+  }
+};
+
 document.getElementById("startBackendBtn").addEventListener("click", () => {
   console.log('Botão "Iniciar Backend" clicado.');
   startBackend();
 });
 
-
-
 const fetchQRCode = async () => {
   try {
+    startBot();
     const response = await fetch("http://localhost:3001/qr");
     if (response.ok) {
       const data = await response.json();
-      console.log("Dados recebidos do backend:", data); 
-      
+      console.log("Dados recebidos do backend:", data);
+
       const qrCodeUrl = data.qrCode;
       let qrImage = document.getElementById("qrCode");
 
@@ -60,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM totalmente carregado!");
   fetchQRCode();
 });
-
 
 async function sendMessage() {
   const message = document.getElementById("messageInput").value;
