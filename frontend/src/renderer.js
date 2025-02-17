@@ -9,7 +9,7 @@ function startBackend() {
     return;
   }
 
-  const backendPath = path.join(__dirname, "..", "backend", "src", "index.js");
+  const backendPath = "D:\\www\\bot-sticker\\backend\\src\\index.js"
 
   console.log(`Iniciando o backend em: ${backendPath}`);
 
