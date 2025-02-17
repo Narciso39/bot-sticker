@@ -9,7 +9,8 @@ function startBackend() {
     return;
   }
 
-  const backendPath = "D:\\www\\bot-sticker\\backend\\src\\index.js"
+  const backendPath =
+    "C:\\Users\\Felipe\\Desktop\\www\\bot-sticker\\backend\\src";
 
   console.log(`Iniciando o backend em: ${backendPath}`);
 
