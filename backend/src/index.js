@@ -10,6 +10,10 @@ const ffmpeg = require("fluent-ffmpeg");
 
 const tempDir = path.join(__dirname, "temp");
 
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir);
+}
+
 let isBotInitialized = false;
 
 const client = new Client({
@@ -76,20 +80,20 @@ Envie um desses comandos para interagir com o bot.
 
   if (message.body === "/f" && message.hasMedia) {
     const media = await message.downloadMedia();
-    
+
     if (!media) {
       message.reply("Erro ao baixar a mídia. Tente novamente.");
       return;
     }
-  
+
     await fs.ensureDir(tempDir);
-  
+
     const extension = media.mimetype.split("/")[1];
     const inputPath = path.join(tempDir, `input.${extension}`);
     const outputPath = path.join(tempDir, "output.webp");
-  
+
     await fs.writeFile(inputPath, media.data, "base64");
-    
+
     if (media.mimetype.startsWith("image/")) {
       try {
         await sharp(inputPath)
@@ -97,10 +101,10 @@ Envie um desses comandos para interagir com o bot.
             fit: "contain",
             background: { r: 0, g: 0, b: 0, alpha: 0 },
           })
-          .webp({ quality: 100 })
+          .webp({ quality: 80 })
           .toFile(outputPath);
 
-        sendSticker(outputPath);
+        await sendSticker(outputPath, inputPath);
       } catch (err) {
         console.error("Erro ao criar a figurinha:", err);
         message.reply("Erro ao criar a figurinha. Tente novamente.");
@@ -110,74 +114,81 @@ Envie um desses comandos para interagir com o bot.
       const webpPath = path.join(tempDir, "output.webp");
 
       ffmpeg(inputPath)
-        .output(gifPath)
-        .noAudio()
-        .videoFilters("scale=512:512:flags=lanczos")
-        .fps(10)
-        .duration(6)
-        .on("end", async () => {
-          console.log("GIF gerado, convertendo para WebP animado...");
-
-          ffmpeg(gifPath)
-            .output(webpPath)
-            .addOutputOptions([
-              "-vcodec libwebp",
-              "-lossless 1",
-              "-loop 0",
-              "-preset default",
-              "-an",
-              "-vsync 0",
-            ])
-            .on("end", async () => {
-              console.log("WebP animado gerado!");
-              sendSticker(webpPath);
-            })
-            .on("error", (err) => {
-              console.error("Erro ao converter GIF para WebP:", err);
-              message.reply("Erro ao criar figurinha animada.");
-            })
-            .run();
-        })
-        .on("error", (err) => {
-          console.error("Erro ao processar o vídeo:", err);
-          message.reply("Erro ao processar o vídeo. Tente novamente.");
-        })
-        .run();
+      .output(gifPath)
+      .noAudio()
+      .videoFilters("scale=512:512:flags=lanczos")
+      .fps(10)
+      .duration(6)
+      .on("end", async () => {
+        console.log("GIF gerado, convertendo para WebP animado...");
+    
+        ffmpeg(gifPath)
+          .output(webpPath)
+          .addOutputOptions([
+            "-vcodec", "libwebp",
+            "-loop", "0",
+            "-preset", "default",
+            "-qscale", "80",
+            "-an",
+            "-vsync", "0",
+            "-s", "512x512"
+          ])
+          .on("end", async () => {
+            console.log("WebP animado gerado!");
+            await sendSticker(webpPath, inputPath);
+          })
+          .on("error", (err) => {
+            console.error("Erro ao converter GIF para WebP:", err);
+            message.reply("Erro ao criar figurinha animada.");
+          })
+          .run();
+      })
+      .on("error", (err) => {
+        console.error("Erro ao processar o vídeo:", err);
+        message.reply("Erro ao processar o vídeo. Tente novamente.");
+      })
+      .run();
     } else {
       message.reply("Por favor, envie uma imagem ou vídeo com o comando '/f'.");
     }
   }
-    async function sendSticker(outputPath, inputPath) {
-      const sticker = MessageMedia.fromFilePath(outputPath);
-    
-      setTimeout(async () => {
-        await client.sendMessage(message.from, sticker, {
-          sendMediaAsSticker: true,
+
+  async function sendSticker(outputPath, inputPath) {
+    console.log("Tentando enviar figurinha:", outputPath);
+    const sticker = MessageMedia.fromFilePath(outputPath);
+
+    try {
+        console.log("Sticker carregado:", sticker);
+      
+       const resp = await client.sendMessage(message.from, sticker, {
+            sendMediaAsSticker: true,
         });
-    
-        setTimeout(async () => {
-          // try {
-           
-            
-          // } catch (err) {
-          //   console.error(`Erro ao remover ${outputPath}:`, err);
-          // }
-          try {
-            await fs.access(outputPath);
-            await fs.rename(outputPath, `${outputPath}.tmp`);
-            await fs.unlink(outputPath);
-            await fs.unlink(`${outputPath}.tmp`);
-            await fs.access(inputPath);
-            await fs.rename(inputPath, `${inputPath}.tmp`);
-            await fs.unlink(inputPath);
-            await fs.unlink(`${inputPath}.tmp`);
-            console.log(`Arquivo removido: ${inputPath}`);
-            console.log(`Arquivo removido: ${outputPath}`);
-          } catch (err) {
-            console.error(`Erro ao remover ou renomear ${inputPath}:`, err);
-          }
-        }, 2000);
-      }, 5000);
+        message.reply(resp);
+
+        console.log("Figurinha enviada com sucesso!");
+        await cleanupFiles(outputPath, inputPath);
+    } catch (err) {
+        console.error("Erro ao enviar a figurinha:", err);
+        message.reply("Erro ao enviar a figurinha. Tente novamente.");
+    }
+}
+
+  async function cleanupFiles(outputPath, inputPath) {
+    try {
+      await fs.access(outputPath);
+      await fs.unlink(outputPath);
+      console.log(`Arquivo removido: ${outputPath}`);
+    } catch (err) {
+      console.error(`Erro ao remover ${outputPath}:`, err);
+    }
+
+    try {
+      await fs.access(inputPath);
+      await fs.unlink(inputPath);
+      console.log(`Arquivo removido: ${inputPath}`);
+    } catch (err) {
+      console.error(`Erro ao remover ${inputPath}:`, err);
+    }
   }
 });
 
